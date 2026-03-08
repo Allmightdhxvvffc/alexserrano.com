@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 6%;
+    --foreground: 150 80% 75%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 150 80% 75%;
+
+    --popover: 220 18% 10%;
+    --popover-foreground: 150 80% 75%;
+
+    --primary: 150 100% 50%;
+    --primary-foreground: 220 20% 6%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 150 60% 70%;
+
+    --muted: 220 15% 13%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 150 100% 50%;
+    --accent-foreground: 220 20% 6%;
+
+    --destructive: 0 80% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 30% 18%;
+    --input: 220 15% 15%;
+    --ring: 150 100% 50%;
+
+    --radius: 0.75rem;
+
+    --neon-glow: 0 0 20px hsla(150, 100%, 50%, 0.3), 0 0 60px hsla(150, 100%, 50%, 0.1);
+    --neon-glow-strong: 0 0 20px hsla(150, 100%, 50%, 0.5), 0 0 80px hsla(150, 100%, 50%, 0.2), 0 0 120px hsla(150, 100%, 50%, 0.1);
+
+    --sidebar-background: 220 18% 8%;
+    --sidebar-foreground: 150 60% 70%;
+    --sidebar-primary: 150 100% 50%;
+    --sidebar-primary-foreground: 220 20% 6%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 150 60% 70%;
+    --sidebar-border: 150 30% 18%;
+    --sidebar-ring: 150 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+@layer utilities {
+  .neon-text {
+    text-shadow: 0 0 10px hsla(150, 100%, 50%, 0.6), 0 0 40px hsla(150, 100%, 50%, 0.2);
+  }
+  .neon-border {
+    box-shadow: 0 0 20px hsla(150, 100%, 50%, 0.3), 0 0 60px hsla(150, 100%, 50%, 0.1);
+  }
+  .neon-border-strong {
+    box-shadow: 0 0 20px hsla(150, 100%, 50%, 0.5), 0 0 80px hsla(150, 100%, 50%, 0.2), 0 0 120px hsla(150, 100%, 50%, 0.1);
+  }
+  .scanline {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      hsla(150, 100%, 50%, 0.03) 2px,
+      hsla(150, 100%, 50%, 0.03) 4px
+    );
+  }
+}
