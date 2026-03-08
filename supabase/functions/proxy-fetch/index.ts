@@ -21,7 +21,6 @@ serve(async (req) => {
       );
     }
 
-    // Normalize URL
     let targetUrl = url.trim();
     if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
       targetUrl = "https://" + targetUrl;
@@ -29,25 +28,32 @@ serve(async (req) => {
 
     console.log(`Proxying request to: ${targetUrl}`);
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
     const response = await fetch(targetUrl, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "identity",
+        "Cache-Control": "no-cache",
       },
       redirect: "follow",
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout);
 
     const contentType = response.headers.get("content-type") || "";
     const finalUrl = response.url;
 
-    // For HTML content, rewrite relative URLs to absolute
     if (contentType.includes("text/html")) {
       let html = await response.text();
 
-      // Inject a <base> tag so relative URLs resolve correctly
-      const baseTag = `<base href="${finalUrl}">`;
+      // Inject <base> tag for relative URL resolution
+      const baseTag = `<base href="${finalUrl}" target="_self">`;
       if (html.includes("<head>")) {
         html = html.replace("<head>", `<head>${baseTag}`);
       } else if (html.includes("<HEAD>")) {
@@ -55,6 +61,11 @@ serve(async (req) => {
       } else {
         html = baseTag + html;
       }
+
+      // Remove Content-Security-Policy meta tags that block iframe embedding
+      html = html.replace(/<meta[^>]*http-equiv=["']?Content-Security-Policy["']?[^>]*>/gi, "");
+      // Remove X-Frame-Options meta
+      html = html.replace(/<meta[^>]*http-equiv=["']?X-Frame-Options["']?[^>]*>/gi, "");
 
       return new Response(
         JSON.stringify({ html, finalUrl, contentType: "text/html" }),
