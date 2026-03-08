@@ -85,7 +85,7 @@ const ProxyViewer = ({ html, url, onClose }: ProxyViewerProps) => {
   );
 
   // Listen for messages from the iframe
-  React.useEffect(() => {
+  useEffect(() => {
     const handler = (e: MessageEvent) => {
       if (e.data?.type === 'proxy-navigate' && e.data.url) {
         navigateTo(e.data.url);
